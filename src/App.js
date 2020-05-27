@@ -1,26 +1,54 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {Fragment, Component } from 'react';
 import './App.css';
+import Logo from "./components/Logo";
+import Navigation from "./components/Navigation";
+import Hero from "./components/Hero";
+import TitleList from "./components/TitleList";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default class App extends Component {
+
+    apiKey = '87dfa1c669eea853da609d4968d294be';
+
+    state = {
+        searchTerm: '',
+        searchUrl: ''
+    };
+
+    handleKeyUp = (e) => {
+        if (e.key === 'Enter' && this.state.searchTerm !== '') {
+            let searchUrl = 'search/multi?query=' + this.state.searchTerm + '&api_key=' + this.apiKey;
+            this.setState({searchUrl: searchUrl});
+        }
+    };
+
+    handleChange = (e) => {
+      this.setState({searchTerm: e.target.value})
+    };
+
+    render(){
+        return (
+            <Fragment>
+                <header className='Header'>
+                    <Logo/>
+                    <Navigation/>
+                    <div id='search' className='Search'>
+                        <input
+                            onKeyUp={this.handleKeyUp}
+                            onChange={this.handleChange}
+                            type='search'
+                            placeholder='Search for a title...'
+                            value={this.state.searchTerm}
+                        />
+                    </div>
+                </header>
+                <Hero/>
+                <TitleList title='Search Results' url={this.state.searchUrl}/>
+                <TitleList title='Top TV pick for Jack' url='discover/tv?sort_by=popularity.desc&page=1'/>
+                <TitleList title='Trending now' url='discover/movie?sort_by=popularity.desc&page=1'/>
+                <TitleList title='Most watches in horror' url='genre/27/movies?sort_by=popularity.desc&page=1'/>
+                <TitleList title='Sci-Fi greats' url='genre/878/movies?sort_by=popularity.desc&page=1'/>
+                <TitleList title='Comedy magic' url='genre/35/movies?sort_by=popularity.desc&page=1'/>
+            </Fragment>
+    )
+    }
 }
-
-export default App;
